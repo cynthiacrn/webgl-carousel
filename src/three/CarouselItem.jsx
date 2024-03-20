@@ -3,11 +3,22 @@ import { useThree } from '@react-three/fiber'
 import gsap from 'gsap'
 import Plane from './Plane.jsx'
 
-export default function CarouselItem() {
+export default function CarouselItem({ index, width, height, setActivePlane, activePlane, item }) {
   const rootRef = useRef()
   const [hover, setHover] = useState(false)
   const [isActive, setIsActive] = useState(false)
+  const [isCloseActive, setCloseActive] = useState(false)
   const { viewport } = useThree()
+  const timeoutID = useRef()
+
+  useEffect(() => {
+    if (activePlane === index) {
+      setIsActive(activePlane === index)
+      setCloseActive(true)
+    } else {
+      setIsActive(null)
+    }
+  }, [activePlane])
 
   useEffect(() => {
     gsap.killTweensOf(rootRef.current.position)
@@ -32,28 +43,31 @@ export default function CarouselItem() {
   const handleClose = (e) => {
     e.stopPropagation()
     if (!isActive) return
-    setIsActive(false)
+    setActivePlane(null)
+    setHover(false)
+    clearTimeout(timeoutID.current)
+    timeoutID.current = setTimeout(() => {
+      setCloseActive(false)
+    }, 1500) // The duration of this timer depends on the duration of the plane's closing animation.
   }
 
   return (
     <group
       ref={rootRef}
       onClick={() => {
-        setIsActive(true)
+        setActivePlane(index)
       }}
       onPointerEnter={() => setHover(true)}
       onPointerLeave={() => setHover(false)}
     >
       <Plane
-        width={1}
-        height={2.5}
-        texture={
-          'https://raw.githubusercontent.com/supahfunk/webgl-carousel/main/public/img/1.jpg'
-        }
+        width={width}
+        height={height}
+        texture={item.image}
         active={isActive}
       />
 
-      {isActive ? (
+      {isCloseActive ? (
         <mesh position={[0, 0, 0.01]} onClick={handleClose}>
           <planeGeometry args={[viewport.width, viewport.height]} />
           <meshBasicMaterial transparent={true} opacity={0} color={'red'} />
