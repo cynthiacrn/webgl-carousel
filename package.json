@@ -1,0 +1,26 @@
+{
+  "name": "threejs-journey-exercise",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "4.1",
+    "vite": "^4.5.0"
+  },
+  "dependencies": {
+    "@react-three/drei": "^9.102.6",
+    "@react-three/fiber": "8.15",
+    "drei": "^2.2.21",
+    "gsap": "^3.12.5",
+    "leva": "^0.9.35",
+    "react": "18.2",
+    "react-dom": "18.2",
+    "react-use": "^17.5.0",
+    "three": "0.158",
+    "vite-plugin-glsl": "^1.2.1"
+  }
+}
