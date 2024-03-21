@@ -1,7 +1,7 @@
 uniform sampler2D uTex;
 uniform vec2 uRes;
-uniform vec2 uImageRes;
 uniform vec2 uZoomScale;
+uniform vec2 uImageRes;
 
 /*------------------------------
       Background Cover UV

@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { usePrevious } from 'react-use'
-import CarouselItem from './CarouselItem.jsx'
 import gsap from 'gsap'
+import CarouselItem from './CarouselItem.jsx'
+import PostProcessing from './PostProcessing.jsx'
+import { lerp, getPiramidalIndex } from '../utils'
 import images from '../data/images'
 
 const planeSettings = {
   width: 1,
   height: 2.5,
-  gap: 0.1
+  gap: 0.2
 }
 
 gsap.defaults({
@@ -18,22 +20,27 @@ gsap.defaults({
 
 export default function Carousel() {
   const [root, setRoot] = useState()
+  const postRef = useRef()
 
   const [activePlane, setActivePlane] = useState(null)
   const prevActivePlane = usePrevious(activePlane)
   const { viewport } = useThree()
+
   const progress = useRef(0)
   const startX = useRef(0)
   const isDown = useRef(false)
   const speedWheel = 0.02
   const speedDrag = -0.3
+  const oldProgress = useRef(0)
+  const speed = useRef(0)
   const items = useMemo(() => {
     if (root) return root.children
   }, [root])
   const displayItems = (item, index, active) => {
+    const piramidalIndex = getPiramidalIndex(items, active)[index]
     gsap.to(item.position, {
       x: (index - active) * (planeSettings.width + planeSettings.gap),
-      y: 0
+      y: items.length * -0.1 + piramidalIndex * 0.1
     })
   }
 
@@ -42,6 +49,17 @@ export default function Carousel() {
 
     const active = Math.floor((progress.current / 100) * (items.length - 1))
     items.forEach((item, index) => displayItems(item, index, active))
+    speed.current = lerp(
+      speed.current,
+      Math.abs(oldProgress.current - progress.current),
+      0.1
+    )
+
+    oldProgress.current = lerp(oldProgress.current, progress.current, 0.1)
+
+    if (postRef.current) {
+      postRef.current.thickness = speed.current
+    }
   })
 
   const handleWheel = (e) => {
@@ -96,7 +114,7 @@ export default function Carousel() {
   const renderSlider = () => {
     return (
       <group ref={setRoot}>
-        {images.map((item, i) => (
+        {images.map((item, index) => (
           <CarouselItem
             width={planeSettings.width}
             height={planeSettings.height}
@@ -104,7 +122,7 @@ export default function Carousel() {
             activePlane={activePlane}
             key={item.image}
             item={item}
-            index={i}
+            index={index}
           />
         ))}
       </group>
@@ -115,6 +133,7 @@ export default function Carousel() {
     <group>
       {renderPlaneEvents()}
       {renderSlider()}
+      <PostProcessing ref={postRef} />
     </group>
   )
 }
