@@ -70,7 +70,10 @@ export default function CarouselItem({ index, width, height, setActivePlane, act
       {isCloseActive ? (
         <mesh position={[0, 0, 0.01]} onClick={handleClose}>
           <planeGeometry args={[viewport.width, viewport.height]} />
-          <meshBasicMaterial transparent={true} opacity={0} color={'red'} />
+          {isActive ?
+            <meshBasicMaterial transparent={true} opacity={0} color={'red'} /> :
+            <meshBasicMaterial transparent={true} opacity={0} color={''} />
+          }
         </mesh>
       ) : null}
     </group>
