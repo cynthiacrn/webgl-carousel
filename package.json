@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "deploy": "vercel --prod"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "4.1",
-    "vite": "^5.2.2"
+    "vite": "^5.2.3"
   },
   "dependencies": {
     "@react-three/drei": "^9.102.6",
@@ -21,6 +22,7 @@
     "react-dom": "18.2",
     "react-use": "^17.5.0",
     "three": "0.158",
+    "vercel": "^33.6.1",
     "vite-plugin-glsl": "^1.2.1"
   }
 }
